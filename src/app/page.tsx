@@ -51,9 +51,6 @@ export default function Home() {
       >
         <div className="mx-auto flex max-w-6xl flex-col gap-10 items-center justify-center text-center lg:flex-col lg:items-center lg:justify-center">
           <div className="flex-1 space-y-6 max-w-3xl">
-            <span data-animate className="inline-flex w-fit rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-              Codex • Software Studio
-            </span>
             <div data-animate className="space-y-4">
               <h1 className="text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
                 {content.hero.title}

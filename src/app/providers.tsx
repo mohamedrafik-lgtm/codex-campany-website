@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/shared/providers/theme-context";
 import type { Locale } from "@/shared/config/i18n/translations";
 import type { Theme } from "@/shared/providers/theme-context";
 import { MouseAmbientEffect } from "@/shared/components/MouseAmbientEffect";
+import SplashCursor from "@/components/SplashCursor";
 
 export function Providers({
   initialLocale,
@@ -19,6 +20,7 @@ export function Providers({
     <ThemeProvider initialTheme={initialTheme}>
       <LocaleProvider initialLocale={initialLocale}>
         {children}
+        <SplashCursor />
         <MouseAmbientEffect />
       </LocaleProvider>
     </ThemeProvider>
