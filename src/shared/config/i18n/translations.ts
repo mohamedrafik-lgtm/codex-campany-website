@@ -51,19 +51,27 @@ export const translations: Record<Locale, TranslationResource> = {
     },
     services: {
       title: "خدماتنا",
-      intro: "نقدّم فريقاً متعدد التخصصات يغطي دورة حياة المنتج كاملة.",
+      intro: "كل ما تحتاجه للريادة. في مكان واحد.",
       items: [
         {
-          title: "تطوير الويب",
-          desc: "تجارب ويب سريعة وعالية الأداء مبنية على أحدث أطر العمل.",
+          title: "أنظمة ERP",
+          desc: "قلب مؤسستك النابض. حلول إدارة متكاملة توحد عملياتك، وتحول البيانات المعقدة إلى قرارات ذكية.",
         },
         {
-          title: "تصميم واجهات وتجربة المستخدم",
-          desc: "تصاميم مدروسة تركّز على أهداف العمل وتوقعات المستخدم النهائي.",
+          title: "الهوية التجارية",
+          desc: "بصمتك الفريدة. نصيغ لك هوية بصرية تخطف الأنظار وترسخ في الأذهان من اللحظة الأولى.",
         },
         {
-          title: "الهندسة السحابية",
-          desc: "بنية تحتية آمنة وقابلة للتوسع على السحابة مع مراقبة مستمرة.",
+          title: "المتاجر الإلكترونية",
+          desc: "سوقك.. بلا حدود. تجربة تسوق سلسة تفتح لمنتجاتك أبواب العالم، وتضاعف مبيعاتك بذكاء.",
+        },
+        {
+          title: "تصميم المواقع",
+          desc: "واجهة تسرق الأضواء. تصاميم مفصلة خصيصاً لتعكس جوهر فكرتك، بدقة بكسل لا تقبل المساومة.",
+        },
+        {
+          title: "تطبيقات الجوال",
+          desc: "قوة الانتشار في جيب المستخدم. تطبيقات أصلية تعمل بسلاسة على iOS و Android.",
         },
       ],
     },
@@ -113,19 +121,27 @@ export const translations: Record<Locale, TranslationResource> = {
     },
     services: {
       title: "Services",
-      intro: "A cross-functional team covering the full product lifecycle.",
+      intro: "Everything you need to lead. In one place.",
       items: [
         {
-          title: "Web Engineering",
-          desc: "Fast, high-performance web experiences built on modern frameworks.",
+          title: "ERP Systems",
+          desc: "Your organization's beating heart. Integrated management solutions that unify operations and turn complex data into smart decisions.",
         },
         {
-          title: "UI/UX Design",
-          desc: "Thoughtful interfaces aligned to business goals and user needs.",
+          title: "Brand Identity",
+          desc: "Your unique fingerprint. We craft visual identities that capture attention and embed in minds from the first moment.",
         },
         {
-          title: "Cloud Engineering",
-          desc: "Secure, scalable cloud foundations with monitoring baked in.",
+          title: "E-Commerce Stores",
+          desc: "Your market.. without borders. Seamless shopping experiences that open global doors for your products and smartly multiply your sales.",
+        },
+        {
+          title: "Website Design",
+          desc: "Interfaces that steal the spotlight. Custom-tailored designs that reflect your idea's essence, with pixel-perfect precision.",
+        },
+        {
+          title: "Mobile Apps",
+          desc: "The power of reach in the user's pocket. Native apps that run smoothly on iOS and Android.",
         },
       ],
     },

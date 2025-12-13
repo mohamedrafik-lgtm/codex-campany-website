@@ -43,7 +43,13 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+}
+
+/* Offset for sticky navbar when scrolling to sections */
+section[id],
+[id] {
+  scroll-margin-top: 120px;
+  scroll-padding-top: 120px;
 }
 
 html[data-theme="light"] {
@@ -96,6 +102,60 @@ html[data-theme="light"] body::before {
 
 body > .global-ambient {
   z-index: 5;
+}
+
+/* Glass overlay layer */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0.08) 25%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.12) 75%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  backdrop-filter: blur(1.5px) saturate(120%);
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0.85;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1),
+              inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] body::after {
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.6) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.4) 0%, transparent 50%),
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.25) 25%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.3) 75%,
+      rgba(255, 255, 255, 0.45) 100%
+    );
+  backdrop-filter: blur(2px) saturate(130%);
+  opacity: 0.7;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3),
+              inset 0 -1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Hide Galaxy in light mode, show meteors */
+html[data-theme="light"] .global-ambient > div {
+  display: none;
+}
+
+/* Show Galaxy in dark mode, hide meteors */
+.meteor {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 body > .relative.z-10 {

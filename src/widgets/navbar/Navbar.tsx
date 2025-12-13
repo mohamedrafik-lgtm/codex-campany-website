@@ -24,7 +24,7 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-white/5 backdrop-blur-xl shadow-lg shadow-black/5">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-3">
           <Image
@@ -44,7 +44,7 @@ export function Navbar() {
             <Link
               key={item.id}
               href={`#${item.id}`}
-              className="transition hover:text-white relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full"
+              className="transition hover:text-white relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-white/80 after:transition-all hover:after:w-full"
             >
               {content.nav[item.key]}
             </Link>
@@ -57,13 +57,6 @@ export function Navbar() {
             className="rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-sm font-medium text-zinc-100 shadow-sm transition hover:border-zinc-600 hover:bg-zinc-700/80"
           >
             {locale === "ar" ? "العربية" : "English"}
-          </button>
-          <button
-            aria-label={content.controls.theme}
-            onClick={toggleTheme}
-            className="rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-sm font-medium text-zinc-100 shadow-sm transition hover:border-zinc-600 hover:bg-zinc-700/80"
-          >
-            {theme === "light" ? "☀️" : "🌙"}
           </button>
         </div>
       </div>

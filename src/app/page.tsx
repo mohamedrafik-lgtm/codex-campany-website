@@ -62,7 +62,7 @@ export default function Home() {
             <div data-animate className="flex flex-wrap items-center justify-center gap-3">
               <button
                 onClick={scrollToNextSection}
-                className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700"
+                className="rounded-full bg-zinc-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-zinc-900/30 transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:shadow-zinc-100/20 dark:hover:bg-zinc-200"
               >
                 {content.hero.ctaPrimary}
               </button>
@@ -81,12 +81,17 @@ export default function Home() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div data-animate className="lg:col-span-1">
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {content.nav.about}
+              {locale === "ar" ? "من نحن" : "Who We Are"}
             </h2>
+            <h3 className="mt-4 text-xl font-bold text-zinc-800 dark:text-zinc-100">
+              {locale === "ar"
+                ? "حيث يلتقي الإتقان الهندسي.. بالشغف الإبداعي."
+                : "Where engineering excellence meets creative passion."}
+            </h3>
             <p className="mt-3 text-zinc-600 dark:text-zinc-300">
               {locale === "ar"
-                ? "فريق هندسي وتصميمي يعمل بجلسات تواصل قصيرة، تسليمات أسبوعية، وشفافية كاملة في التكاليف والخطط."
-                : "An engineering and design team working in short touchpoints, weekly increments, and full transparency on scope and cost."}
+                ? "نحن لسنا مجرد شركة تطوير تقليدية. نحن تحالف استراتيجي لعقول لا تؤمن بالمستحيل. ندمج قوة المؤسسات الكبرى بمرونة فرق الابتكار، لنسد الفجوة بين أعقد تحديات الأعمال، وبين الحلول الرقمية السلسة."
+                : "We're not just another development company. We're a strategic alliance of minds that refuse to accept impossible. We blend enterprise power with startup agility to bridge the gap between complex business challenges and seamless digital solutions."}
             </p>
           </div>
           <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
@@ -140,20 +145,36 @@ export default function Home() {
               {locale === "ar" ? "احصل على خطة تنفيذ" : "Get a delivery plan"}
             </Link>
           </div>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {content.services.items.map((item) => (
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {content.services.items.map((item, index) => (
               <div
                 data-animate
                 key={item.title}
-                className="flex h-full flex-col justify-between rounded-2xl border border-zinc-200 bg-zinc-50/60 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800/40"
+                className="group relative flex h-full flex-col justify-between rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 p-8 backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:border-white/20 hover:shadow-2xl hover:shadow-blue-500/10 dark:from-zinc-900/60 dark:to-zinc-800/40"
               >
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{item.title}</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-300">{item.desc}</p>
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/0 to-purple-500/0 opacity-0 transition-opacity duration-500 group-hover:from-blue-500/5 group-hover:to-purple-500/5 group-hover:opacity-100" />
+                
+                {/* Number badge */}
+                <div className="absolute -right-3 -top-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 font-bold text-white shadow-lg shadow-blue-500/30">
+                  {index + 1}
                 </div>
-                <span className="mt-4 text-xs font-semibold text-blue-600 dark:text-blue-300">
-                  {locale === "ar" ? "تسليم كل أسبوع" : "Weekly drops"}
-                </span>
+
+                <div className="relative z-10 space-y-4">
+                  <h3 className="text-2xl font-bold text-white transition-colors group-hover:text-blue-400">
+                    {item.title}
+                  </h3>
+                  <p className="text-base leading-relaxed text-zinc-300 group-hover:text-zinc-200">
+                    {item.desc}
+                  </p>
+                </div>
+                
+                <div className="relative z-10 mt-6 flex items-center gap-2 text-sm font-semibold text-blue-400 transition-all group-hover:text-blue-300">
+                  <span>{locale === "ar" ? "تسليم كل أسبوع" : "Weekly drops"}</span>
+                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
               </div>
             ))}
           </div>

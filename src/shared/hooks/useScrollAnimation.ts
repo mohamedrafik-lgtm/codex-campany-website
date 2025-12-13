@@ -11,18 +11,21 @@ export function useScrollAnimation() {
     if (sections.length === 0) return;
 
     // Animate content elements in a section
-    const animateInContent = (section: HTMLElement) => {
+    const animateInContent = (section: HTMLElement, force = false) => {
       const items = section.querySelectorAll('[data-animate]') as NodeListOf<HTMLElement>;
       items.forEach((item, i) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        item.style.transition = 'none';
-        
-        setTimeout(() => {
-          item.style.transition = `all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s`;
-          item.style.opacity = '1';
-          item.style.transform = 'translateY(0)';
-        }, 100);
+        // Only hide if not already visible, unless forced
+        if (force || item.style.opacity !== '1') {
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(20px)';
+          item.style.transition = 'none';
+          
+          setTimeout(() => {
+            item.style.transition = `all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s`;
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+          }, 50);
+        }
       });
     };
 
@@ -77,10 +80,17 @@ export function useScrollAnimation() {
       }
     };
 
-    // Initial setup
+    // Initial setup - make all sections visible
     sections.forEach((section) => {
       section.style.opacity = '1';
       section.style.transform = 'translateY(0)';
+      
+      // Make all content visible by default
+      const items = section.querySelectorAll('[data-animate]') as NodeListOf<HTMLElement>;
+      items.forEach((item) => {
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      });
     });
 
     // Animate first section content
@@ -88,10 +98,98 @@ export function useScrollAnimation() {
       animateInContent(sections[0]);
     }, 300);
 
+    // Handle hash navigation (from navbar clicks)
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+
+      const targetIndex = sections.findIndex(section => section.id === hash);
+      if (targetIndex !== -1) {
+        const targetSection = sections[targetIndex];
+        
+        // First make sure section is visible
+        targetSection.style.opacity = '1';
+        targetSection.style.transform = 'translateY(0)';
+        
+        // Show all items immediately
+        const items = targetSection.querySelectorAll('[data-animate]') as NodeListOf<HTMLElement>;
+        items.forEach((item, i) => {
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(20px)';
+          
+          setTimeout(() => {
+            item.style.transition = `all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s`;
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+          }, 150);
+        });
+        
+        currentIndex = targetIndex;
+      }
+    };
+
+    // Observe when sections come into view
+    const observerOptions = {
+      root: null,
+      threshold: 0.1,
+      rootMargin: '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const section = entry.target as HTMLElement;
+          const items = section.querySelectorAll('[data-animate]') as NodeListOf<HTMLElement>;
+          
+          // Animate content when section is in view
+          items.forEach((item, i) => {
+            setTimeout(() => {
+              item.style.transition = `all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)`;
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }, i * 100);
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Observe all sections
+    sections.forEach(section => observer.observe(section));
+    
+    // Also add scroll event listener as backup
+    const handleScroll = () => {
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight * 0.8 && rect.bottom > 0;
+        
+        if (isVisible) {
+          const items = section.querySelectorAll('[data-animate]') as NodeListOf<HTMLElement>;
+          items.forEach((item) => {
+            if (item.style.opacity !== '1') {
+              item.style.transition = 'all 0.8s ease-out';
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }
+          });
+        }
+      });
+    };
+
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Check initial hash on load
+    handleHashChange();
+    
+    // Trigger scroll check immediately to show visible content
+    handleScroll();
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
     };
   }, []);
 }

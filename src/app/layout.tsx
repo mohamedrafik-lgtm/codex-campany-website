@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import { Navbar } from "@/widgets/navbar";
+import Threads from "@/components/Threads";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -56,6 +57,13 @@ export default async function RootLayout({
               `}</style>
             </span>
           ))}
+          <div style={{ position: 'fixed', inset: 0, zIndex: 5, pointerEvents: 'none', width: '100%', height: '100%' }}>
+            <Threads
+              amplitude={1}
+              distance={0}
+              enableMouseInteraction={true}
+            />
+          </div>
         </div>
         <div className="relative z-10">
           <Providers initialLocale={initialLocale} initialTheme={initialTheme}>
