@@ -9,6 +9,9 @@
   --mouse-x: 0;
   --mouse-y: 0;
   --radius: 0.625rem;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-cairo: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-jetbrains-mono: 'JetBrains Mono', 'Courier New', monospace;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -114,6 +117,32 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
   min-height: 100vh;
   position: relative;
+  font-family: var(--font-inter);
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Font for Arabic content */
+html[lang="ar"] body,
+html[dir="rtl"] body {
+  font-family: var(--font-cairo);
+}
+
+/* Font for English content */
+html[lang="en"] body,
+html[dir="ltr"] body {
+  font-family: var(--font-inter);
+}
+
+/* Monospace font for code */
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-jetbrains-mono);
+  font-feature-settings: 'liga' 0;
 }
 
 body::before {
@@ -687,100 +716,185 @@ section {
 /* Journey Step Hover Effects */
 .journey-step {
   position: relative;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .journey-step::before {
   content: '';
   position: absolute;
-  inset: -8px;
-  border-radius: 1.5rem;
+  inset: -12px;
+  border-radius: 1.75rem;
   background: linear-gradient(45deg, transparent, transparent);
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.6s ease;
   z-index: -1;
+  filter: blur(20px);
 }
 
 .journey-step[data-step="1"]::before {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05), transparent);
 }
 
 .journey-step[data-step="2"]::before {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05), transparent);
 }
 
 .journey-step[data-step="3"]::before {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05), transparent);
 }
 
 .journey-step[data-step="4"]::before {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.05), transparent);
 }
 
 .journey-step[data-step="5"]::before {
-  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), transparent);
+  background: linear-gradient(135deg, rgba(217, 70, 239, 0.15), rgba(217, 70, 239, 0.05), transparent);
 }
 
 .journey-step:hover::before {
   opacity: 1;
 }
 
+/* Journey Step Icon Animation */
+.journey-step-icon {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3), 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px -5px rgba(59, 130, 246, 0.5), 0 0 0 8px rgba(59, 130, 246, 0);
+  }
+}
+
+.journey-step[data-step="1"] .journey-step-icon {
+  animation: pulse-glow-blue 3s ease-in-out infinite;
+}
+
+.journey-step[data-step="2"] .journey-step-icon {
+  animation: pulse-glow-indigo 3s ease-in-out infinite 0.3s;
+}
+
+.journey-step[data-step="3"] .journey-step-icon {
+  animation: pulse-glow-violet 3s ease-in-out infinite 0.6s;
+}
+
+.journey-step[data-step="4"] .journey-step-icon {
+  animation: pulse-glow-purple 3s ease-in-out infinite 0.9s;
+}
+
+.journey-step[data-step="5"] .journey-step-icon {
+  animation: pulse-glow-fuchsia 3s ease-in-out infinite 1.2s;
+}
+
+@keyframes pulse-glow-blue {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3), 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px -5px rgba(59, 130, 246, 0.6), 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+}
+
+@keyframes pulse-glow-indigo {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3), 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px -5px rgba(99, 102, 241, 0.6), 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes pulse-glow-violet {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3), 0 0 0 0 rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px -5px rgba(139, 92, 246, 0.6), 0 0 0 10px rgba(139, 92, 246, 0);
+  }
+}
+
+@keyframes pulse-glow-purple {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.3), 0 0 0 0 rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px -5px rgba(168, 85, 247, 0.6), 0 0 0 10px rgba(168, 85, 247, 0);
+  }
+}
+
+@keyframes pulse-glow-fuchsia {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(217, 70, 239, 0.3), 0 0 0 0 rgba(217, 70, 239, 0.4);
+  }
+  50% {
+    box-shadow: 0 10px 40px -5px rgba(217, 70, 239, 0.6), 0 0 0 10px rgba(217, 70, 239, 0);
+  }
+}
+
 /* Journey Progress Indicator Animation */
 .journey-indicator {
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
+}
+
+.journey-indicator:hover {
+  opacity: 0.8 !important;
+  transform: translateX(4px);
 }
 
 .journey-indicator.active {
   opacity: 1 !important;
-  transform: translateX(8px);
+  transform: translateX(10px);
 }
 
 .journey-indicator.active span {
   color: rgb(59, 130, 246);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .journey-indicator.active div {
-  transform: scale(1.5);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+  transform: scale(1.8);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), 0 0 10px rgba(59, 130, 246, 0.5);
 }
 
 .journey-indicator[data-step="2"].active span {
-  color: rgb(139, 92, 246);
+  color: rgb(99, 102, 241);
 }
 
 .journey-indicator[data-step="2"].active div {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.8), 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
 .journey-indicator[data-step="3"].active span {
-  color: rgb(16, 185, 129);
+  color: rgb(139, 92, 246);
 }
 
 .journey-indicator[data-step="3"].active div {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.8), 0 0 10px rgba(139, 92, 246, 0.5);
 }
 
 .journey-indicator[data-step="4"].active span {
-  color: rgb(249, 115, 22);
+  color: rgb(168, 85, 247);
 }
 
 .journey-indicator[data-step="4"].active div {
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.6);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.8), 0 0 10px rgba(168, 85, 247, 0.5);
 }
 
 .journey-indicator[data-step="5"].active span {
-  color: rgb(236, 72, 153);
+  color: rgb(217, 70, 239);
 }
 
 .journey-indicator[data-step="5"].active div {
-  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+  box-shadow: 0 0 25px rgba(217, 70, 239, 0.8), 0 0 10px rgba(217, 70, 239, 0.5);
 }
 
 /* Journey Step Active State */
 .journey-step.in-view {
-  animation: stepAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: stepAppear 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes stepAppear {
@@ -788,8 +902,101 @@ section {
     opacity: 0;
     transform: translateX(-30px) translateY(20px) scale(0.9);
   }
+  60% {
+    opacity: 1;
+    transform: translateX(3px) translateY(-3px) scale(1.01);
+  }
   100% {
     opacity: 1;
     transform: translateX(0) translateY(0) scale(1);
   }
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.journey-step.in-view > div:last-child::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 2s ease-in-out 0.5s;
+}
+
+/* Number counter animation */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.journey-step-icon.in-view {
+  animation: countUp 0.5s ease-out forwards, pulse-glow-blue 3s ease-in-out infinite 0.5s;
+}
+
+/* Typography improvements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4,
+html[lang="ar"] h5,
+html[lang="ar"] h6 {
+  font-weight: 800;
+  letter-spacing: normal;
+  line-height: 1.5;
+}
+
+p {
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+}
+
+html[lang="ar"] p {
+  line-height: 1.8;
+  letter-spacing: normal;
+}
+
+/* Better font rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Improve readability */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* Numbers in Arabic should use Western numerals */
+html[lang="ar"] .use-western-numerals {
+  font-feature-settings: 'lnum' 1;
 }

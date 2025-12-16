@@ -18,6 +18,7 @@ export default function Home() {
       const journeySteps = journeySection.querySelectorAll('.journey-step');
       const journeyIndicators = journeySection.querySelectorAll('.journey-indicator');
       const progressPath = journeySection.querySelector('#journey-progress-path') as SVGPathElement;
+      const stepIcons = journeySection.querySelectorAll('.journey-step-icon');
 
       let activeStep = 0;
       let totalProgress = 0;
@@ -29,6 +30,9 @@ export default function Home() {
 
         if (rect.top < triggerPoint && rect.bottom > 0) {
           step.classList.add('in-view');
+          if (stepIcons[index]) {
+            stepIcons[index].classList.add('in-view');
+          }
           activeStep = Math.max(activeStep, index + 1);
           
           // Calculate progress based on scroll position
@@ -39,28 +43,44 @@ export default function Home() {
         }
       });
 
-      // Update indicators
+      // Update indicators with stagger
       journeyIndicators.forEach((indicator, index) => {
         if (index < activeStep) {
-          indicator.classList.add('active');
+          setTimeout(() => {
+            indicator.classList.add('active');
+          }, index * 100);
         } else {
           indicator.classList.remove('active');
         }
       });
 
-      // Animate SVG path
+      // Animate SVG path with easing
       if (progressPath) {
-        const pathLength = 1000;
+        const pathLength = 2000; // Updated for longer path
         const progress = Math.min(1, totalProgress / journeySteps.length);
-        const offset = pathLength - (pathLength * progress);
+        const easedProgress = progress < 0.5 
+          ? 2 * progress * progress 
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        const offset = pathLength - (pathLength * easedProgress);
         progressPath.style.strokeDashoffset = offset.toString();
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    let ticking = false;
+    const scrollHandler = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', scrollHandler, { passive: true });
     handleScroll(); // Initial check
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', scrollHandler);
   }, []);
 
   const scrollToNextSection = () => {
@@ -336,7 +356,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="journey" className="mx-auto max-w-6xl px-6 py-16 bg-transparent dark:bg-transparent">
+      <section id="journey" className="mx-auto max-w-6xl px-6 py-16 bg-transparent dark:bg-transparent overflow-hidden">
         <div className="grid lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-1 lg:sticky lg:top-24" data-animate>
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
@@ -359,49 +379,56 @@ export default function Home() {
             {/* Journey Progress Indicator */}
             <div className="mt-8 space-y-3">
               <div className="flex items-center gap-3 journey-indicator" data-step="1">
-                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-blue-600 shadow-lg transition-all duration-500"></div>
-                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</span>
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-blue-500 dark:bg-blue-400 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</span>
               </div>
               <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="2">
-                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-purple-600 shadow-lg transition-all duration-500"></div>
-                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'التصميم' : 'Design'}</span>
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-indigo-500 dark:bg-indigo-400 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'التصميم' : 'Design'}</span>
               </div>
               <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="3">
-                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-green-600 shadow-lg transition-all duration-500"></div>
-                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</span>
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-violet-500 dark:bg-violet-400 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</span>
               </div>
               <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="4">
-                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-orange-600 shadow-lg transition-all duration-500"></div>
-                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الإطلاق' : 'Launch'}</span>
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-purple-500 dark:bg-purple-400 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الإطلاق' : 'Launch'}</span>
               </div>
               <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="5">
-                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-pink-600 shadow-lg transition-all duration-500"></div>
-                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'النمو' : 'Growth'}</span>
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-fuchsia-500 dark:bg-fuchsia-400 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'النمو' : 'Growth'}</span>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-2 relative">
+          <div className="lg:col-span-2 relative overflow-hidden">
             {/* Animated Path */}
-            <svg className="absolute left-0 top-0 h-full w-20 overflow-visible pointer-events-none" style={{ zIndex: 0 }}>
+            <svg className="absolute left-0 top-0 w-16 pointer-events-none" style={{ zIndex: 0, overflow: 'visible', height: '100%', minHeight: '2500px' }}>
               <defs>
                 <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
-                  <stop offset="20%" stopColor="#8b5cf6" stopOpacity="0.3" />
-                  <stop offset="40%" stopColor="#10b981" stopOpacity="0.3" />
-                  <stop offset="60%" stopColor="#f97316" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#ec4899" stopOpacity="0.3" />
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.15" />
+                  <stop offset="25%" stopColor="#6366f1" stopOpacity="0.15" />
+                  <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.15" />
+                  <stop offset="75%" stopColor="#a855f7" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.15" />
                 </linearGradient>
                 <linearGradient id="pathGradientActive" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="25%" stopColor="#8b5cf6" />
-                  <stop offset="50%" stopColor="#10b981" />
-                  <stop offset="75%" stopColor="#f97316" />
-                  <stop offset="100%" stopColor="#ec4899" />
+                  <stop offset="25%" stopColor="#6366f1" />
+                  <stop offset="50%" stopColor="#8b5cf6" />
+                  <stop offset="75%" stopColor="#a855f7" />
+                  <stop offset="100%" stopColor="#6366f1" />
                 </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
               </defs>
               <path
-                d="M 40 30 Q 25 80, 40 130 T 40 230 Q 55 280, 40 330 T 40 430 Q 25 480, 40 530"
+                d="M 32 30 Q 20 80, 32 130 T 32 230 Q 44 280, 32 330 T 32 430 Q 20 480, 32 580 T 32 730 Q 44 780, 32 880 T 32 1030 Q 20 1080, 32 1150"
                 fill="none"
                 stroke="url(#pathGradient)"
                 strokeWidth="3"
@@ -410,159 +437,160 @@ export default function Home() {
               />
               <path
                 id="journey-progress-path"
-                d="M 40 30 Q 25 80, 40 130 T 40 230 Q 55 280, 40 330 T 40 430 Q 25 480, 40 530"
+                d="M 32 30 Q 20 80, 32 130 T 32 230 Q 44 280, 32 330 T 32 430 Q 20 480, 32 580 T 32 730 Q 44 780, 32 880 T 32 1030 Q 20 1080, 32 1150"
                 fill="none"
                 stroke="url(#pathGradientActive)"
                 strokeWidth="3"
                 strokeLinecap="round"
-                strokeDasharray="1000"
-                strokeDashoffset="1000"
+                strokeDasharray="2000"
+                strokeDashoffset="2000"
                 className="transition-all duration-700 ease-out"
+                filter="url(#glow)"
               />
             </svg>
 
-            <div className="space-y-16 pl-24 relative" style={{ zIndex: 1 }}>
+            <div className="space-y-16 pl-20 relative" style={{ zIndex: 1 }}>
               {/* Step 1 - Discovery */}
               <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="1">
-                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold shadow-xl shadow-blue-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <div className="absolute -left-[4.5rem] mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold shadow-xl shadow-blue-500/30 transition-all duration-500 group-hover:scale-110 group-hover:shadow-blue-500/60 journey-step-icon">
                   <div className="text-center">
                     <div className="text-2xl">🔍</div>
                     <div className="text-xs font-semibold">01</div>
                   </div>
                 </div>
-                <div className="flex-1 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-blue-900/50 dark:from-blue-950/30 dark:to-zinc-900/60 dark:shadow-blue-500/10">
+                <div className="flex-1 rounded-2xl border border-zinc-200/60 bg-white/70 p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-blue-500/10 group-hover:scale-[1.02] group-hover:-translate-y-2 group-hover:border-blue-300/50 dark:border-zinc-800/60 dark:bg-zinc-900/40 dark:shadow-blue-500/5 backdrop-blur-sm">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-blue-900 dark:text-blue-100">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</h4>
-                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نفهم الرؤية، ونرسم المخطط الاستراتيجي.' : 'We understand the vision and map the strategic plan.'}</p>
+                      <h4 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 transition-colors">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</h4>
+                      <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">{locale === 'ar' ? 'نفهم الرؤية، ونرسم المخطط الاستراتيجي.' : 'We understand the vision and map the strategic plan.'}</p>
                       <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <li className="flex items-center gap-2">
-                          <span className="text-blue-500">✦</span>
+                          <span className="text-blue-500 dark:text-blue-400">✦</span>
                           {locale === 'ar' ? 'تحليل احتياجات العمل' : 'Business needs analysis'}
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="text-blue-500">✦</span>
+                          <span className="text-blue-500 dark:text-blue-400">✦</span>
                           {locale === 'ar' ? 'دراسة السوق والمنافسين' : 'Market & competitor research'}
                         </li>
                       </ul>
                     </div>
-                    <div className="text-5xl opacity-10 dark:opacity-5">🚀</div>
+                    <div className="text-5xl opacity-5 dark:opacity-[0.03] transition-opacity group-hover:opacity-10 dark:group-hover:opacity-[0.06]">🚀</div>
                   </div>
                 </div>
               </div>
 
               {/* Step 2 - Design */}
               <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="2">
-                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <div className="absolute -left-[4.5rem] mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white font-bold shadow-xl shadow-indigo-500/30 transition-all duration-500 group-hover:scale-110 group-hover:shadow-indigo-500/60 journey-step-icon">
                   <div className="text-center">
                     <div className="text-2xl">🎨</div>
                     <div className="text-xs font-semibold">02</div>
                   </div>
                 </div>
-                <div className="flex-1 rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-purple-900/50 dark:from-purple-950/30 dark:to-zinc-900/60 dark:shadow-purple-500/10">
+                <div className="flex-1 rounded-2xl border border-zinc-200/60 bg-white/70 p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-indigo-500/10 group-hover:scale-[1.02] group-hover:-translate-y-2 group-hover:border-indigo-300/50 dark:border-zinc-800/60 dark:bg-zinc-900/40 dark:shadow-indigo-500/5 backdrop-blur-sm">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-purple-900 dark:text-purple-100">{locale === 'ar' ? 'التصميم' : 'Design'}</h4>
-                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نصيغ المنطق، ونبدع التجربة البصرية.' : 'We craft the logic and create visual experience.'}</p>
+                      <h4 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 transition-colors">{locale === 'ar' ? 'التصميم' : 'Design'}</h4>
+                      <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">{locale === 'ar' ? 'نصيغ المنطق، ونبدع التجربة البصرية.' : 'We craft the logic and create visual experience.'}</p>
                       <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <li className="flex items-center gap-2">
-                          <span className="text-purple-500">✦</span>
+                          <span className="text-indigo-500 dark:text-indigo-400">✦</span>
                           {locale === 'ar' ? 'تصميم واجهة المستخدم' : 'UI/UX design'}
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="text-purple-500">✦</span>
+                          <span className="text-indigo-500 dark:text-indigo-400">✦</span>
                           {locale === 'ar' ? 'النماذج التفاعلية' : 'Interactive prototypes'}
                         </li>
                       </ul>
                     </div>
-                    <div className="text-5xl opacity-10 dark:opacity-5">✨</div>
+                    <div className="text-5xl opacity-5 dark:opacity-[0.03] transition-opacity group-hover:opacity-10 dark:group-hover:opacity-[0.06]">✨</div>
                   </div>
                 </div>
               </div>
 
               {/* Step 3 - Engineering */}
               <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="3">
-                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-white font-bold shadow-xl shadow-green-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <div className="absolute -left-[4.5rem] mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 text-white font-bold shadow-xl shadow-violet-500/30 transition-all duration-500 group-hover:scale-110 group-hover:shadow-violet-500/60 journey-step-icon">
                   <div className="text-center">
                     <div className="text-2xl">⚙️</div>
                     <div className="text-xs font-semibold">03</div>
                   </div>
                 </div>
-                <div className="flex-1 rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-green-900/50 dark:from-green-950/30 dark:to-zinc-900/60 dark:shadow-green-500/10">
+                <div className="flex-1 rounded-2xl border border-zinc-200/60 bg-white/70 p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-violet-500/10 group-hover:scale-[1.02] group-hover:-translate-y-2 group-hover:border-violet-300/50 dark:border-zinc-800/60 dark:bg-zinc-900/40 dark:shadow-violet-500/5 backdrop-blur-sm">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-green-900 dark:text-green-100">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</h4>
-                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نبني الكود، ونؤسس النظام القوي.' : 'We build the code and establish robust system.'}</p>
+                      <h4 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 transition-colors">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</h4>
+                      <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">{locale === 'ar' ? 'نبني الكود، ونؤسس النظام القوي.' : 'We build the code and establish robust system.'}</p>
                       <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <li className="flex items-center gap-2">
-                          <span className="text-green-500">✦</span>
+                          <span className="text-violet-500 dark:text-violet-400">✦</span>
                           {locale === 'ar' ? 'تطوير البنية التحتية' : 'Infrastructure development'}
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="text-green-500">✦</span>
+                          <span className="text-violet-500 dark:text-violet-400">✦</span>
                           {locale === 'ar' ? 'الاختبارات الشاملة' : 'Comprehensive testing'}
                         </li>
                       </ul>
                     </div>
-                    <div className="text-5xl opacity-10 dark:opacity-5">💻</div>
+                    <div className="text-5xl opacity-5 dark:opacity-[0.03] transition-opacity group-hover:opacity-10 dark:group-hover:opacity-[0.06]">💻</div>
                   </div>
                 </div>
               </div>
 
               {/* Step 4 - Launch */}
               <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="4">
-                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white font-bold shadow-xl shadow-orange-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <div className="absolute -left-[4.5rem] mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold shadow-xl shadow-purple-500/30 transition-all duration-500 group-hover:scale-110 group-hover:shadow-purple-500/60 journey-step-icon">
                   <div className="text-center">
                     <div className="text-2xl">🚀</div>
                     <div className="text-xs font-semibold">04</div>
                   </div>
                 </div>
-                <div className="flex-1 rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-orange-900/50 dark:from-orange-950/30 dark:to-zinc-900/60 dark:shadow-orange-500/10">
+                <div className="flex-1 rounded-2xl border border-zinc-200/60 bg-white/70 p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-purple-500/10 group-hover:scale-[1.02] group-hover:-translate-y-2 group-hover:border-purple-300/50 dark:border-zinc-800/60 dark:bg-zinc-900/40 dark:shadow-purple-500/5 backdrop-blur-sm">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-orange-900 dark:text-orange-100">{locale === 'ar' ? 'الإطلاق' : 'Launch'}</h4>
-                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نطلق المنتج للعالم بثقة واحترافية.' : 'We launch the product to the world with confidence.'}</p>
+                      <h4 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 transition-colors">{locale === 'ar' ? 'الإطلاق' : 'Launch'}</h4>
+                      <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">{locale === 'ar' ? 'نطلق المنتج للعالم بثقة واحترافية.' : 'We launch the product to the world with confidence.'}</p>
                       <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <li className="flex items-center gap-2">
-                          <span className="text-orange-500">✦</span>
+                          <span className="text-purple-500 dark:text-purple-400">✦</span>
                           {locale === 'ar' ? 'النشر والتوزيع' : 'Deployment & distribution'}
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="text-orange-500">✦</span>
+                          <span className="text-purple-500 dark:text-purple-400">✦</span>
                           {locale === 'ar' ? 'المراقبة المستمرة' : 'Continuous monitoring'}
                         </li>
                       </ul>
                     </div>
-                    <div className="text-5xl opacity-10 dark:opacity-5">🎯</div>
+                    <div className="text-5xl opacity-5 dark:opacity-[0.03] transition-opacity group-hover:opacity-10 dark:group-hover:opacity-[0.06]">🎯</div>
                   </div>
                 </div>
               </div>
 
               {/* Step 5 - Growth */}
               <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="5">
-                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 text-white font-bold shadow-xl shadow-pink-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                <div className="absolute -left-[4.5rem] mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-fuchsia-600 text-white font-bold shadow-xl shadow-fuchsia-500/30 transition-all duration-500 group-hover:scale-110 group-hover:shadow-fuchsia-500/60 journey-step-icon">
                   <div className="text-center">
                     <div className="text-2xl">📈</div>
                     <div className="text-xs font-semibold">05</div>
                   </div>
                 </div>
-                <div className="flex-1 rounded-2xl border border-pink-200 bg-gradient-to-br from-pink-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-pink-900/50 dark:from-pink-950/30 dark:to-zinc-900/60 dark:shadow-pink-500/10">
+                <div className="flex-1 rounded-2xl border border-zinc-200/60 bg-white/70 p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-fuchsia-500/10 group-hover:scale-[1.02] group-hover:-translate-y-2 group-hover:border-fuchsia-300/50 dark:border-zinc-800/60 dark:bg-zinc-900/40 dark:shadow-fuchsia-500/5 backdrop-blur-sm">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-pink-900 dark:text-pink-100">{locale === 'ar' ? 'النمو' : 'Growth'}</h4>
-                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نواصل التطوير والتحسين المستمر.' : 'We continue development and continuous improvement.'}</p>
+                      <h4 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 transition-colors">{locale === 'ar' ? 'النمو' : 'Growth'}</h4>
+                      <p className="mt-3 text-base text-zinc-600 dark:text-zinc-400">{locale === 'ar' ? 'نواصل التطوير والتحسين المستمر.' : 'We continue development and continuous improvement.'}</p>
                       <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                         <li className="flex items-center gap-2">
-                          <span className="text-pink-500">✦</span>
+                          <span className="text-fuchsia-500 dark:text-fuchsia-400">✦</span>
                           {locale === 'ar' ? 'تحليل الأداء' : 'Performance analysis'}
                         </li>
                         <li className="flex items-center gap-2">
-                          <span className="text-pink-500">✦</span>
+                          <span className="text-fuchsia-500 dark:text-fuchsia-400">✦</span>
                           {locale === 'ar' ? 'التحديثات والتطوير' : 'Updates & evolution'}
                         </li>
                       </ul>
                     </div>
-                    <div className="text-5xl opacity-10 dark:opacity-5">🌟</div>
+                    <div className="text-5xl opacity-5 dark:opacity-[0.03] transition-opacity group-hover:opacity-10 dark:group-hover:opacity-[0.06]">🌟</div>
                   </div>
                 </div>
               </div>
