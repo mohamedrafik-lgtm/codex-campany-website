@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/img/9a642e6f-c17d-4dad-9ab3-0c44c42430e1.jpg";
+import logo from "@/img/لوجو كوديكس.png";
 import { useLocale } from "@/shared/providers/locale-context";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/shared/providers/theme-context";

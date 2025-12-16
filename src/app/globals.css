@@ -672,3 +672,124 @@ section {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+/* Journey Section Animations */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.animate-dash {
+  animation: dash 30s linear infinite;
+}
+
+/* Journey Step Hover Effects */
+.journey-step {
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.journey-step::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 1.5rem;
+  background: linear-gradient(45deg, transparent, transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+
+.journey-step[data-step="1"]::before {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent);
+}
+
+.journey-step[data-step="2"]::before {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), transparent);
+}
+
+.journey-step[data-step="3"]::before {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+}
+
+.journey-step[data-step="4"]::before {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), transparent);
+}
+
+.journey-step[data-step="5"]::before {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), transparent);
+}
+
+.journey-step:hover::before {
+  opacity: 1;
+}
+
+/* Journey Progress Indicator Animation */
+.journey-indicator {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.journey-indicator.active {
+  opacity: 1 !important;
+  transform: translateX(8px);
+}
+
+.journey-indicator.active span {
+  color: rgb(59, 130, 246);
+  font-weight: 600;
+}
+
+.journey-indicator.active div {
+  transform: scale(1.5);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+}
+
+.journey-indicator[data-step="2"].active span {
+  color: rgb(139, 92, 246);
+}
+
+.journey-indicator[data-step="2"].active div {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+}
+
+.journey-indicator[data-step="3"].active span {
+  color: rgb(16, 185, 129);
+}
+
+.journey-indicator[data-step="3"].active div {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
+
+.journey-indicator[data-step="4"].active span {
+  color: rgb(249, 115, 22);
+}
+
+.journey-indicator[data-step="4"].active div {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.6);
+}
+
+.journey-indicator[data-step="5"].active span {
+  color: rgb(236, 72, 153);
+}
+
+.journey-indicator[data-step="5"].active div {
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
+}
+
+/* Journey Step Active State */
+.journey-step.in-view {
+  animation: stepAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes stepAppear {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px) translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+  }
+}

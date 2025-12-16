@@ -3,10 +3,65 @@
 import Link from "next/link";
 import { useLocale } from "@/shared/providers/locale-context";
 import { useScrollAnimation } from "@/shared/hooks/useScrollAnimation";
+import { useEffect } from "react";
 
 export default function Home() {
   const { content, locale } = useLocale();
   useScrollAnimation();
+
+  // Journey animation on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const journeySection = document.getElementById('journey');
+      if (!journeySection) return;
+
+      const journeySteps = journeySection.querySelectorAll('.journey-step');
+      const journeyIndicators = journeySection.querySelectorAll('.journey-indicator');
+      const progressPath = journeySection.querySelector('#journey-progress-path') as SVGPathElement;
+
+      let activeStep = 0;
+      let totalProgress = 0;
+
+      journeySteps.forEach((step, index) => {
+        const rect = step.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const triggerPoint = windowHeight * 0.7;
+
+        if (rect.top < triggerPoint && rect.bottom > 0) {
+          step.classList.add('in-view');
+          activeStep = Math.max(activeStep, index + 1);
+          
+          // Calculate progress based on scroll position
+          if (rect.top < triggerPoint) {
+            const stepProgress = Math.min(1, Math.max(0, (triggerPoint - rect.top) / rect.height));
+            totalProgress = index + stepProgress;
+          }
+        }
+      });
+
+      // Update indicators
+      journeyIndicators.forEach((indicator, index) => {
+        if (index < activeStep) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
+
+      // Animate SVG path
+      if (progressPath) {
+        const pathLength = 1000;
+        const progress = Math.min(1, totalProgress / journeySteps.length);
+        const offset = pathLength - (pathLength * progress);
+        progressPath.style.strokeDashoffset = offset.toString();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToNextSection = () => {
     const sections = Array.from(document.querySelectorAll('section')) as HTMLElement[];
@@ -283,7 +338,7 @@ export default function Home() {
 
       <section id="journey" className="mx-auto max-w-6xl px-6 py-16 bg-transparent dark:bg-transparent">
         <div className="grid lg:grid-cols-3 gap-8 items-start">
-          <div className="lg:col-span-1" data-animate>
+          <div className="lg:col-span-1 lg:sticky lg:top-24" data-animate>
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
               {locale === 'ar' ? 'رحلة العمل' : 'Our Process'}
             </h2>
@@ -300,37 +355,215 @@ export default function Home() {
                 ? 'نقود مشاريع كرحلة حقيقية — واضحون في الخطوات، حاسمون في النتائج.'
                 : 'We treat projects as real journeys — clear steps, decisive outcomes.'}
             </p>
+            
+            {/* Journey Progress Indicator */}
+            <div className="mt-8 space-y-3">
+              <div className="flex items-center gap-3 journey-indicator" data-step="1">
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-blue-600 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</span>
+              </div>
+              <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="2">
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-purple-600 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'التصميم' : 'Design'}</span>
+              </div>
+              <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="3">
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-green-600 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</span>
+              </div>
+              <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="4">
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-orange-600 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'الإطلاق' : 'Launch'}</span>
+              </div>
+              <div className="flex items-center gap-3 journey-indicator opacity-40" data-step="5">
+                <div className="flex h-3 w-3 items-center justify-center rounded-full bg-pink-600 shadow-lg transition-all duration-500"></div>
+                <span className="text-sm font-medium text-zinc-400 transition-colors duration-500">{locale === 'ar' ? 'النمو' : 'Growth'}</span>
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-2 relative">
-            <div className="absolute left-6 top-6 bottom-6 w-1 bg-zinc-200 dark:bg-zinc-800 rounded-full" />
-            <div id="journey-progress" className="absolute left-6 top-6 w-1 bg-blue-500 rounded-full origin-top transition-all duration-300" style={{ height: '0%' }} />
+            {/* Animated Path */}
+            <svg className="absolute left-0 top-0 h-full w-20 overflow-visible pointer-events-none" style={{ zIndex: 0 }}>
+              <defs>
+                <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+                  <stop offset="20%" stopColor="#8b5cf6" stopOpacity="0.3" />
+                  <stop offset="40%" stopColor="#10b981" stopOpacity="0.3" />
+                  <stop offset="60%" stopColor="#f97316" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#ec4899" stopOpacity="0.3" />
+                </linearGradient>
+                <linearGradient id="pathGradientActive" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#3b82f6" />
+                  <stop offset="25%" stopColor="#8b5cf6" />
+                  <stop offset="50%" stopColor="#10b981" />
+                  <stop offset="75%" stopColor="#f97316" />
+                  <stop offset="100%" stopColor="#ec4899" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M 40 30 Q 25 80, 40 130 T 40 230 Q 55 280, 40 330 T 40 430 Q 25 480, 40 530"
+                fill="none"
+                stroke="url(#pathGradient)"
+                strokeWidth="3"
+                strokeDasharray="8,8"
+                className="animate-dash"
+              />
+              <path
+                id="journey-progress-path"
+                d="M 40 30 Q 25 80, 40 130 T 40 230 Q 55 280, 40 330 T 40 430 Q 25 480, 40 530"
+                fill="none"
+                stroke="url(#pathGradientActive)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray="1000"
+                strokeDashoffset="1000"
+                className="transition-all duration-700 ease-out"
+              />
+            </svg>
 
-            <div className="space-y-12 pl-16">
-              {/* Step 1 */}
-              <div data-animate className="relative flex items-start gap-6 journey-step">
-                <div className="absolute -left-10 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-bold shadow-lg">1</div>
-                <div className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-900/60">
-                  <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</h4>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'نفهم الرؤية، ونرسم المخطط.' : 'We understand the vision and map the plan.'}</p>
+            <div className="space-y-16 pl-24 relative" style={{ zIndex: 1 }}>
+              {/* Step 1 - Discovery */}
+              <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="1">
+                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold shadow-xl shadow-blue-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                  <div className="text-center">
+                    <div className="text-2xl">🔍</div>
+                    <div className="text-xs font-semibold">01</div>
+                  </div>
+                </div>
+                <div className="flex-1 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-blue-900/50 dark:from-blue-950/30 dark:to-zinc-900/60 dark:shadow-blue-500/10">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-2xl font-bold text-blue-900 dark:text-blue-100">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</h4>
+                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نفهم الرؤية، ونرسم المخطط الاستراتيجي.' : 'We understand the vision and map the strategic plan.'}</p>
+                      <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <li className="flex items-center gap-2">
+                          <span className="text-blue-500">✦</span>
+                          {locale === 'ar' ? 'تحليل احتياجات العمل' : 'Business needs analysis'}
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-blue-500">✦</span>
+                          {locale === 'ar' ? 'دراسة السوق والمنافسين' : 'Market & competitor research'}
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-5xl opacity-10 dark:opacity-5">🚀</div>
+                  </div>
                 </div>
               </div>
 
-              {/* Step 2 */}
-              <div data-animate className="relative flex items-start gap-6 journey-step">
-                <div className="absolute -left-10 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white font-bold shadow-lg">2</div>
-                <div className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-900/60">
-                  <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'التصميم' : 'Design'}</h4>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'نصيغ المنطق، ونبدع الشكل.' : 'We craft the logic and design the experience.'}</p>
+              {/* Step 2 - Design */}
+              <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="2">
+                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                  <div className="text-center">
+                    <div className="text-2xl">🎨</div>
+                    <div className="text-xs font-semibold">02</div>
+                  </div>
+                </div>
+                <div className="flex-1 rounded-2xl border border-purple-200 bg-gradient-to-br from-purple-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-purple-900/50 dark:from-purple-950/30 dark:to-zinc-900/60 dark:shadow-purple-500/10">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-2xl font-bold text-purple-900 dark:text-purple-100">{locale === 'ar' ? 'التصميم' : 'Design'}</h4>
+                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نصيغ المنطق، ونبدع التجربة البصرية.' : 'We craft the logic and create visual experience.'}</p>
+                      <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <li className="flex items-center gap-2">
+                          <span className="text-purple-500">✦</span>
+                          {locale === 'ar' ? 'تصميم واجهة المستخدم' : 'UI/UX design'}
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-purple-500">✦</span>
+                          {locale === 'ar' ? 'النماذج التفاعلية' : 'Interactive prototypes'}
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-5xl opacity-10 dark:opacity-5">✨</div>
+                  </div>
                 </div>
               </div>
 
-              {/* Step 3 */}
-              <div data-animate className="relative flex items-start gap-6 journey-step">
-                <div className="absolute -left-10 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white font-bold shadow-lg">3</div>
-                <div className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-900/60">
-                  <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</h4>
-                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'نبني الكود، ونؤسس النظام.' : 'We build the code and establish the system.'}</p>
+              {/* Step 3 - Engineering */}
+              <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="3">
+                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-white font-bold shadow-xl shadow-green-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                  <div className="text-center">
+                    <div className="text-2xl">⚙️</div>
+                    <div className="text-xs font-semibold">03</div>
+                  </div>
+                </div>
+                <div className="flex-1 rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-green-900/50 dark:from-green-950/30 dark:to-zinc-900/60 dark:shadow-green-500/10">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-2xl font-bold text-green-900 dark:text-green-100">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</h4>
+                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نبني الكود، ونؤسس النظام القوي.' : 'We build the code and establish robust system.'}</p>
+                      <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-500">✦</span>
+                          {locale === 'ar' ? 'تطوير البنية التحتية' : 'Infrastructure development'}
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-500">✦</span>
+                          {locale === 'ar' ? 'الاختبارات الشاملة' : 'Comprehensive testing'}
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-5xl opacity-10 dark:opacity-5">💻</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 4 - Launch */}
+              <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="4">
+                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-white font-bold shadow-xl shadow-orange-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                  <div className="text-center">
+                    <div className="text-2xl">🚀</div>
+                    <div className="text-xs font-semibold">04</div>
+                  </div>
+                </div>
+                <div className="flex-1 rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-orange-900/50 dark:from-orange-950/30 dark:to-zinc-900/60 dark:shadow-orange-500/10">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-2xl font-bold text-orange-900 dark:text-orange-100">{locale === 'ar' ? 'الإطلاق' : 'Launch'}</h4>
+                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نطلق المنتج للعالم بثقة واحترافية.' : 'We launch the product to the world with confidence.'}</p>
+                      <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <li className="flex items-center gap-2">
+                          <span className="text-orange-500">✦</span>
+                          {locale === 'ar' ? 'النشر والتوزيع' : 'Deployment & distribution'}
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-orange-500">✦</span>
+                          {locale === 'ar' ? 'المراقبة المستمرة' : 'Continuous monitoring'}
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-5xl opacity-10 dark:opacity-5">🎯</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 5 - Growth */}
+              <div data-animate className="relative flex items-start gap-6 journey-step group" data-step="5">
+                <div className="absolute -left-16 mt-1 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 text-white font-bold shadow-xl shadow-pink-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                  <div className="text-center">
+                    <div className="text-2xl">📈</div>
+                    <div className="text-xs font-semibold">05</div>
+                  </div>
+                </div>
+                <div className="flex-1 rounded-2xl border border-pink-200 bg-gradient-to-br from-pink-50 to-white p-8 shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:scale-[1.02] group-hover:-translate-y-1 dark:border-pink-900/50 dark:from-pink-950/30 dark:to-zinc-900/60 dark:shadow-pink-500/10">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-2xl font-bold text-pink-900 dark:text-pink-100">{locale === 'ar' ? 'النمو' : 'Growth'}</h4>
+                      <p className="mt-3 text-base text-zinc-700 dark:text-zinc-300">{locale === 'ar' ? 'نواصل التطوير والتحسين المستمر.' : 'We continue development and continuous improvement.'}</p>
+                      <ul className="mt-4 space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+                        <li className="flex items-center gap-2">
+                          <span className="text-pink-500">✦</span>
+                          {locale === 'ar' ? 'تحليل الأداء' : 'Performance analysis'}
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-pink-500">✦</span>
+                          {locale === 'ar' ? 'التحديثات والتطوير' : 'Updates & evolution'}
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-5xl opacity-10 dark:opacity-5">🌟</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -340,20 +573,146 @@ export default function Home() {
 
       <section
         id="contact"
-        className="border-t border-zinc-200/40 bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-16 text-white dark:border-zinc-800/40"
+        className="border-t border-zinc-200/40 bg-transparent dark:bg-transparent px-6 py-16 dark:border-zinc-800/40"
       >
         <div className="mx-auto max-w-6xl">
-          <div data-animate className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-3">
-              <h2 className="text-2xl font-semibold">{content.contact.title}</h2>
-              <p className="text-sm text-blue-100">{content.contact.subtitle}</p>
+          <div data-animate className="mb-12 text-center">
+            <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">{content.contact.title}</h2>
+            <p className="mt-3 text-lg text-zinc-600 dark:text-zinc-300">{content.contact.subtitle}</p>
+          </div>
+
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Contact Information */}
+            <div data-animate className="space-y-6">
+              <div className="rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/60">
+                <h3 className="mb-6 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                  {locale === 'ar' ? 'تواصل معنا' : 'Get in Touch'}
+                </h3>
+                
+                {/* Email Addresses */}
+                <div className="space-y-4">
+                  <div className="group flex items-start gap-4 rounded-xl p-4 transition hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                        {locale === 'ar' ? 'الاستفسارات العامة' : 'General Inquiries'}
+                      </p>
+                      <a 
+                        href="mailto:info@nova-codex.tech" 
+                        className="mt-1 text-base font-semibold text-blue-600 transition hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                      >
+                        info@nova-codex.tech
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="group flex items-start gap-4 rounded-xl p-4 transition hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                        {locale === 'ar' ? 'الوظائف والتوظيف' : 'Careers & Hiring'}
+                      </p>
+                      <a 
+                        href="mailto:careers@nova-codex.tech" 
+                        className="mt-1 text-base font-semibold text-green-600 transition hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+                      >
+                        careers@nova-codex.tech
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="group flex items-start gap-4 rounded-xl p-4 transition hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/30">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                        {locale === 'ar' ? 'الدعم الفني' : 'Technical Support'}
+                      </p>
+                      <a 
+                        href="mailto:support@nova-codex.tech" 
+                        className="mt-1 text-base font-semibold text-purple-600 transition hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                      >
+                        support@nova-codex.tech
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <Link
-              href="mailto:hello@codex.studio"
-              className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
-            >
-              {content.contact.cta}
-            </Link>
+
+            {/* Contact Form */}
+            <div data-animate className="rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/60">
+              <h3 className="mb-6 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                {locale === 'ar' ? 'أرسل رسالة' : 'Send a Message'}
+              </h3>
+              <form className="space-y-5">
+                <div>
+                  <label htmlFor="name" className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    {locale === 'ar' ? 'الاسم' : 'Name'}
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400"
+                    placeholder={locale === 'ar' ? 'اسمك الكامل' : 'Your full name'}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    {locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400"
+                    placeholder={locale === 'ar' ? 'بريدك الإلكتروني' : 'your@email.com'}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    {locale === 'ar' ? 'رقم الهاتف' : 'Phone Number'}
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400"
+                    placeholder={locale === 'ar' ? '+20 123 456 7890' : '+1 (555) 000-0000'}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    {locale === 'ar' ? 'الرسالة' : 'Message'}
+                  </label>
+                  <textarea
+                    id="message"
+                    rows={5}
+                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-zinc-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400"
+                    placeholder={locale === 'ar' ? 'اكتب رسالتك هنا...' : 'Write your message here...'}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/30 transition hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                >
+                  {locale === 'ar' ? 'إرسال الرسالة' : 'Send Message'}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </section>
