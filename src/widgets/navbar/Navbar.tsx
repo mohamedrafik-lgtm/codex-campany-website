@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/img/9a642e6f-c17d-4dad-9ab3-0c44c42430e1.jpg";
 import { useLocale } from "@/shared/providers/locale-context";
+import { usePathname } from "next/navigation";
 import { useTheme } from "@/shared/providers/theme-context";
 import type { TranslationResource } from "@/shared/config/i18n/translations";
 
@@ -14,6 +15,7 @@ const NAV_ITEMS: { id: string; key: NavKey }[] = [
   { id: "about", key: "about" },
   { id: "services", key: "services" },
   { id: "works", key: "works" },
+  { id: "portfolio", key: "portfolio" },
   { id: "testimonials", key: "testimonials" },
   { id: "journey", key: "journey" },
   { id: "contact", key: "contact" },
@@ -21,6 +23,7 @@ const NAV_ITEMS: { id: string; key: NavKey }[] = [
 
 export function Navbar() {
   const { content, toggleLocale, locale } = useLocale();
+  const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -40,15 +43,39 @@ export function Navbar() {
           </div>
         </div>
         <nav className="hidden items-center gap-8 text-sm font-medium text-zinc-300 md:flex">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.id}
-              href={`#${item.id}`}
-              className="transition hover:text-white relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-white/80 after:transition-all hover:after:w-full"
-            >
-              {content.nav[item.key]}
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const shouldUseRouteHash = pathname !== '/';
+            const href = item.key === 'portfolio' ? '/portfolio' : shouldUseRouteHash ? `/#${item.id}` : `#${item.id}`;
+            const isLocalHash = href.startsWith('#');
+
+            return (
+              <Link
+                key={item.id}
+                href={href}
+                onClick={(e) => {
+                  if (!isLocalHash) return; // allow normal navigation for routes or cross-page hashes
+
+                  // only intercept when we're already on the home page
+                  if (pathname === '/') {
+                    e.preventDefault();
+                    const target = document.getElementById(item.id);
+                    if (target) {
+                      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      try {
+                        history.replaceState(null, '', `#${item.id}`);
+                        window.dispatchEvent(new HashChangeEvent('hashchange'));
+                      } catch (err) {
+                        window.location.hash = `#${item.id}`;
+                      }
+                    }
+                  }
+                }}
+                className="transition hover:text-white relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-white/80 after:transition-all hover:after:w-full"
+              >
+                {content.nav[item.key]}
+              </Link>
+            );
+          })}
         </nav>
         <div className="flex items-center gap-3">
           <button

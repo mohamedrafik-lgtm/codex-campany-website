@@ -156,6 +156,34 @@ export function useScrollAnimation() {
     // Observe all sections
     sections.forEach(section => observer.observe(section));
     
+    // Journey steps progress (timeline)
+    const journeySteps = Array.from(document.querySelectorAll('.journey-step')) as HTMLElement[];
+    const progressEl = document.getElementById('journey-progress');
+    let stepObserver: IntersectionObserver | null = null;
+
+    if (journeySteps.length && progressEl) {
+      stepObserver = new IntersectionObserver((entries) => {
+        // choose the most visible entry
+        let best: IntersectionObserverEntry | null = null;
+        entries.forEach((e) => {
+          if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+        });
+        if (!best) return;
+
+        const idx = journeySteps.findIndex((s) => s === (best!.target as HTMLElement));
+        journeySteps.forEach((s, i) => {
+          if (i === idx) s.classList.add('active');
+          else s.classList.remove('active');
+        });
+
+        const percent = ((idx + 1) / journeySteps.length) * 100;
+        progressEl.style.transition = 'height 420ms cubic-bezier(0.2,0.9,0.2,1)';
+        progressEl.style.height = `${percent}%`;
+      }, { root: null, threshold: [0.25, 0.5, 0.75] });
+
+      journeySteps.forEach((s) => stepObserver!.observe(s));
+    }
+    
     // Also add scroll event listener as backup
     const handleScroll = () => {
       sections.forEach((section) => {
@@ -190,6 +218,7 @@ export function useScrollAnimation() {
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
+      if (stepObserver) stepObserver.disconnect();
     };
   }, []);
 }

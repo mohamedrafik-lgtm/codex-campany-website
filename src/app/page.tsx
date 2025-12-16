@@ -182,30 +182,71 @@ export default function Home() {
       </section>
 
       <section id="works" className="mx-auto max-w-6xl px-6 py-16 bg-transparent dark:bg-transparent">
-        <div data-animate className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div>
+        <div className="grid gap-8 lg:grid-cols-3 items-start">
+          <div data-animate className="lg:col-span-1">
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {content.works.title}
+              {locale === 'ar' ? 'أعمالنا المختارة' : 'Selected Works'}
             </h2>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-300">{content.works.intro}</p>
+            <h3 className="mt-4 text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
+              {locale === 'ar' ? 'أثر لا يُمحى.' : 'An Indelible Impact.'}
+            </h3>
+            <p className="mt-4 text-zinc-600 dark:text-zinc-300">
+              {locale === 'ar'
+                ? 'الفلسفة: النتائج تتحدث بصوت أعلى.'
+                : 'Philosophy: Let results speak louder.'}
+            </p>
+            <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400">
+              {locale === 'ar'
+                ? 'نعرض مشاريع منتقاة تُظهر تأثيرنا الحقيقي على الأعمال، بدءاً من تحسين العمليات إلى تعزيز العائد.'
+                : 'Handpicked projects that demonstrate measurable business impact — from operational uplift to revenue growth.'}
+            </p>
           </div>
-          <Link
-            href="#contact"
-            className="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200"
-          >
-            {locale === "ar" ? "اطلب عرضاً مفصلاً" : "Request a case deck"}
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {["B2B dashboard", "Mobile commerce", "Fintech onboarding"].map((item) => (
-            <div
-              data-animate
-              key={item}
-              className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/50 p-6 text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/40 dark:text-zinc-300"
-            >
-              {item}
+
+          <div className="lg:col-span-2">
+            <div data-animate className="relative rounded-3xl overflow-hidden border border-zinc-200 bg-gradient-to-br from-white/60 to-zinc-50 p-6 shadow-lg dark:border-zinc-800 dark:from-zinc-900/60 dark:to-zinc-800/40">
+              <div className="absolute -right-3 -top-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 font-bold text-white shadow-lg shadow-blue-500/30">
+                01
+              </div>
+
+              <div className="relative z-10 grid gap-4 sm:grid-cols-3 sm:items-start">
+                <div className="sm:col-span-2">
+                  <h4 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'المنصة اللوجستية الوطنية' : 'National Logistics Platform'}</h4>
+                  <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                    <strong className="text-zinc-800 dark:text-zinc-100">{locale === 'ar' ? 'العميل: وزارة النقل' : 'Client: Ministry of Transport'}</strong>
+                    <p className="mt-3">{locale === 'ar' ? 'نظرة عامة سريعة: تصميم وتنفيذ نظام لوجستي متكامل لربط الموانئ، المخازن، وشبكات النقل الوطني.' : 'Brief: Designed and delivered an integrated logistics system connecting ports, warehouses, and national transport networks.'}</p>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-1 flex flex-col items-start gap-3">
+                  <div className="rounded-lg bg-zinc-50 px-3 py-2 text-xs font-semibold text-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-200">{locale === 'ar' ? 'نقطة النجاح' : 'The Metric'}</div>
+                  <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                    {locale === 'ar'
+                      ? 'خفضنا التكاليف التشغيلية بنسبة 40%، وعالجنا صفقات يومية بأكثر من 10 ملايين دولار.'
+                      : 'Reduced operational costs by 40% and processed daily transactions exceeding $10M.'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between gap-4">
+                <p className="text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'حل قابل للتوسع، مع مستوى توافر مرتفع وشفافية بيانات كاملة.' : 'A scalable solution with high availability and end-to-end data transparency.'}</p>
+                <div className="flex items-center gap-3">
+                  <a
+                    href="#contact"
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-white/10 via-white/5 to-white/10 backdrop-blur-sm border border-white/10 shadow-lg hover:from-white/20 hover:to-white/20"
+                  >
+                    {locale === 'ar' ? 'اطلب دراسة حالة' : 'Request case study'}
+                  </a>
+
+                  <Link
+                    href="/portfolio"
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-zinc-900 bg-white/10 backdrop-blur-sm border border-white/10 hover:bg-white/20 dark:text-white"
+                  >
+                    {locale === 'ar' ? 'عرض المحفظة' : 'Portfolio'}
+                  </Link>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 
@@ -241,35 +282,59 @@ export default function Home() {
       </section>
 
       <section id="journey" className="mx-auto max-w-6xl px-6 py-16 bg-transparent dark:bg-transparent">
-        <div data-animate className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div>
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          <div className="lg:col-span-1" data-animate>
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {content.journey.title}
+              {locale === 'ar' ? 'رحلة العمل' : 'Our Process'}
             </h2>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-              {locale === "ar"
-                ? "خريطة طريق واضحة منذ الاكتشاف وحتى التحسين بعد الإطلاق."
-                : "A clear roadmap from discovery through post-launch improvements."}
+            <h3 className="mt-4 text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
+              {locale === 'ar' ? 'من الفكرة.. إلى القمة.' : 'From Idea... To Summit.'}
+            </h3>
+            <p className="mt-4 text-zinc-600 dark:text-zinc-300">
+              {locale === 'ar'
+                ? 'الفلسفة: البساطة في التسمية، العمق في التنفيذ.'
+                : 'Philosophy: Simple names, deep execution.'}
+            </p>
+            <p className="mt-6 text-sm text-zinc-500 dark:text-zinc-400">
+              {locale === 'ar'
+                ? 'نقود مشاريع كرحلة حقيقية — واضحون في الخطوات، حاسمون في النتائج.'
+                : 'We treat projects as real journeys — clear steps, decisive outcomes.'}
             </p>
           </div>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {content.journey.steps.map((step, idx) => (
-            <div
-              data-animate
-              key={step.title}
-              className="rounded-2xl border border-zinc-200 bg-white/70 p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60"
-            >
-              <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
-                <span>{locale === "ar" ? "خطوة" : "Step"}</span>
-                <span className="font-semibold">{idx + 1}</span>
+
+          <div className="lg:col-span-2 relative">
+            <div className="absolute left-6 top-6 bottom-6 w-1 bg-zinc-200 dark:bg-zinc-800 rounded-full" />
+            <div id="journey-progress" className="absolute left-6 top-6 w-1 bg-blue-500 rounded-full origin-top transition-all duration-300" style={{ height: '0%' }} />
+
+            <div className="space-y-12 pl-16">
+              {/* Step 1 */}
+              <div data-animate className="relative flex items-start gap-6 journey-step">
+                <div className="absolute -left-10 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white font-bold shadow-lg">1</div>
+                <div className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-900/60">
+                  <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'الاكتشاف' : 'Discovery'}</h4>
+                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'نفهم الرؤية، ونرسم المخطط.' : 'We understand the vision and map the plan.'}</p>
+                </div>
               </div>
-              <h3 className="mt-3 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{step.desc}</p>
+
+              {/* Step 2 */}
+              <div data-animate className="relative flex items-start gap-6 journey-step">
+                <div className="absolute -left-10 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white font-bold shadow-lg">2</div>
+                <div className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-900/60">
+                  <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'التصميم' : 'Design'}</h4>
+                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'نصيغ المنطق، ونبدع الشكل.' : 'We craft the logic and design the experience.'}</p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div data-animate className="relative flex items-start gap-6 journey-step">
+                <div className="absolute -left-10 mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-white font-bold shadow-lg">3</div>
+                <div className="rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-900/60">
+                  <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{locale === 'ar' ? 'الهندسة' : 'Engineering'}</h4>
+                  <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{locale === 'ar' ? 'نبني الكود، ونؤسس النظام.' : 'We build the code and establish the system.'}</p>
+                </div>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
       </section>
 

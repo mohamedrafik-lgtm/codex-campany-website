@@ -41,6 +41,37 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Reveal animation helpers for portfolio cards and other reveals */
+.reveal-initial {
+  opacity: 0;
+  transform: translateY(24px) scale(0.985);
+}
+.is-revealed {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+  transition: opacity 700ms cubic-bezier(0.2,0.9,0.2,1), transform 700ms cubic-bezier(0.2,0.9,0.2,1);
+}
+
+/* utility wrapper to avoid specificity issues */
+.reveal-component.reveal-initial {
+  opacity: 0;
+}
+.reveal-component.is-revealed {
+  opacity: 1;
+}
+
+/* Portfolio image sizing: on small screens use a fixed tall card, on md+ take remaining viewport height minus navbar (~64px) */
+.portfolio-image {
+  height: 420px;
+}
+
+@media (min-width: 768px) {
+  .portfolio-image {
+    height: calc(100vh - 64px);
+    max-height: 900px;
+    min-height: 480px;
+  }
+}
 html {
   scroll-behavior: smooth;
 }
