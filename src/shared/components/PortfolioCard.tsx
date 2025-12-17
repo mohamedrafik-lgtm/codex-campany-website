@@ -18,7 +18,7 @@ type Project = {
 };
 
 export function PortfolioCard({ project, locale }: { project: Project; locale: string }) {
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLElement>(null!);
   useRevealOnScroll(ref);
 
   return (

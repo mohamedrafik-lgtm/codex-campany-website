@@ -9,6 +9,13 @@ export type Project = {
   highlight?: string;
   successTitle?: string;
   successDesc?: string;
+  // Optional localized (Arabic) fields
+  title_ar?: string;
+  client_ar?: string;
+  desc_ar?: string;
+  highlight_ar?: string;
+  successTitle_ar?: string;
+  successDesc_ar?: string;
 };
 
 export const projects: Project[] = [

@@ -6,6 +6,7 @@ export type TranslationResource = {
     about: string;
     services: string;
     works: string;
+    portfolio: string;
     testimonials: string;
     journey: string;
     contact: string;
