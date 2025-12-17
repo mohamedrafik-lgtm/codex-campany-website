@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { Inter, Cairo, JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import { Navbar } from "@/widgets/navbar";
-import Threads from "@/components/Threads";
+import { BackgroundEffects } from "./BackgroundEffects";
 import "./globals.css";
 
 const inter = Inter({
@@ -77,36 +77,9 @@ export default async function RootLayout({
         <meta name="theme-color" content="#0b0b10" />
       </head>
       <body className={`${inter.variable} ${cairo.variable} ${jetbrainsMono.variable} antialiased`}>
-        <div className="global-ambient" aria-hidden>
-          {[...Array(20)].map((_, i) => (
-            <span 
-              key={i} 
-              className="meteor" 
-              style={{ 
-                '--meteor-delay': `${i * 1.5}s`,
-                '--meteor-duration': `${2.2 + Math.random() * 1.2}s`,
-                '--meteor-start-left': `${Math.random() * 90 + 5}%`,
-                '--meteor-start-top': `${Math.random() * 50}%`,
-              } as React.CSSProperties} 
-            >
-              <style>{`
-                .meteor:nth-child(${i + 1})::before {
-                  animation: meteor-trail var(--meteor-duration, 2.5s) cubic-bezier(0.15, 0.82, 0.25, 1) infinite;
-                  animation-delay: var(--meteor-delay);
-                }
-              `}</style>
-            </span>
-          ))}
-          <div style={{ position: 'fixed', inset: 0, zIndex: 5, pointerEvents: 'none', width: '100%', height: '100%' }}>
-            <Threads
-              amplitude={1}
-              distance={0}
-              enableMouseInteraction={true}
-            />
-          </div>
-        </div>
         <div className="relative z-10">
           <Providers initialLocale={initialLocale} initialTheme={initialTheme}>
+            <BackgroundEffects />
             <Navbar />
             <main>{children}</main>
           </Providers>
