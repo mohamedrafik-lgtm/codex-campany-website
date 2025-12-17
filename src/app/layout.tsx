@@ -59,12 +59,15 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const initialLocale = cookieStore.get("locale")?.value === "en" ? "en" : "ar";
-  const initialTheme = cookieStore.get("theme")?.value === "dark" ? "dark" : "light";
+  // Default to dark on first visit (no cookie) to match design
+  const initialTheme = cookieStore.get("theme")?.value === "light" ? "light" : "dark";
 
   return (
     <html
       lang={initialLocale}
       dir={initialLocale === "ar" ? "rtl" : "ltr"}
+      data-theme={initialTheme}
+      className={initialTheme === "dark" ? "dark" : undefined}
       suppressHydrationWarning
     >
       <head>

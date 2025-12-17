@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/img/لوجو كوديكس.png";
 import { useLocale } from "@/shared/providers/locale-context";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/shared/providers/theme-context";
@@ -31,7 +30,7 @@ export function Navbar() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-3">
           <Image
-            src={logo}
+            src="/favicon.png"
             alt="Codex logo"
             width={48}
             height={48}
