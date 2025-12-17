@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Threads from "@/components/Threads";
 
+interface MeteorStyle {
+  delay: string;
+  duration: string;
+  left: string;
+  top: string;
+}
+
 /**
  * BackgroundEffects: Isolated client component for all animated background effects.
  * Prevents SSR hydration mismatches and ensures effects only run on the client.
@@ -11,6 +18,23 @@ import Threads from "@/components/Threads";
 export function BackgroundEffects() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [webGLFailed, setWebGLFailed] = useState(false);
+  const [meteorStyles, setMeteorStyles] = useState<MeteorStyle[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Generate random meteor styles only on the client after hydration
+  useEffect(() => {
+    const styles: MeteorStyle[] = [];
+    for (let i = 0; i < 20; i++) {
+      styles.push({
+        delay: `${i * 1.5}s`,
+        duration: `${2.2 + Math.random() * 1.2}s`,
+        left: `${Math.random() * 90 + 5}%`,
+        top: `${Math.random() * 50}%`,
+      });
+    }
+    setMeteorStyles(styles);
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     // Ensure container exists and is mounted
@@ -33,6 +57,16 @@ export function BackgroundEffects() {
       window.removeEventListener("error", handleWebGLError);
     };
   }, []);
+
+  // Prevent hydration mismatch by only rendering after hydration
+  if (!isHydrated) {
+    return (
+      <div
+        className="fixed inset-0 z-5 pointer-events-none w-full h-full bg-black"
+        aria-hidden="true"
+      />
+    );
+  }
 
   return (
     <div
@@ -102,16 +136,16 @@ export function BackgroundEffects() {
       `}</style>
 
       <div className={`global-ambient ${webGLFailed ? "webgl-fallback" : ""}`} aria-hidden>
-        {[...Array(20)].map((_, i) => (
+        {meteorStyles.map((style, i) => (
           <span
             key={i}
             className="meteor"
             style={
               {
-                "--meteor-delay": `${i * 1.5}s`,
-                "--meteor-duration": `${2.2 + Math.random() * 1.2}s`,
-                "--meteor-start-left": `${Math.random() * 90 + 5}%`,
-                "--meteor-start-top": `${Math.random() * 50}%`,
+                "--meteor-delay": style.delay,
+                "--meteor-duration": style.duration,
+                "--meteor-start-left": style.left,
+                "--meteor-start-top": style.top,
               } as React.CSSProperties
             }
           >
