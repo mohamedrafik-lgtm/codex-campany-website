@@ -77,7 +77,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="#0b0b10" />
       </head>
       <body className={`${inter.variable} ${cairo.variable} ${jetbrainsMono.variable} antialiased`}>
-        <div className="relative z-10">
+        <div className="relative" style={{ zIndex: 50 }}>
           <Providers initialLocale={initialLocale} initialTheme={initialTheme}>
             <BackgroundEffects />
             <Navbar />

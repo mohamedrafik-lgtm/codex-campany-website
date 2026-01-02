@@ -7,7 +7,7 @@ export type TranslationResource = {
     services: string;
     works: string;
     portfolio: string;
-    testimonials: string;
+    stack: string;
     journey: string;
     contact: string;
   };
@@ -21,6 +21,11 @@ export type TranslationResource = {
     title: string;
     intro: string;
     items: { title: string; desc: string }[];
+  };
+  projects: {
+    title: string;
+    intro: string;
+    items: string[];
   };
   works: { title: string; intro: string };
   testimonials: { title: string; intro: string };
@@ -40,7 +45,7 @@ export const translations: Record<Locale, TranslationResource> = {
       services: "خدماتنا",
       works: "أعمالنا المختارة",
       portfolio: "المحفظة",
-      testimonials: "آراء العملاء",
+      stack: "التقنيات المستخدمة",
       journey: "رحلة العمل",
       contact: "تواصل معنا",
     },
@@ -77,6 +82,22 @@ export const translations: Record<Locale, TranslationResource> = {
         },
       ],
     },
+    projects: {
+      title: "نماذج الأعمال",
+      intro: "نساعد فريقك على بناء وتطوير الحلول الموثوقة والقابلة للتوسع",
+      items: [
+        "نظام إدارة علاقات العملاء",
+        "نظام تخطيط الموارد",
+        "نظام إدارة الموارد البشرية",
+        "إدارة مخازن ومشتريات",
+        "نظام إدارة المعدات والآلات",
+        "نظام المستخلصات والفواتير",
+        "إدارة عمالة ومقاولون",
+        "إدارة التكاليف والميزانية",
+        "نظام إدارة المشاريع",
+        "نظام المراسلة عبر الواتساب",
+      ],
+    },
     works: {
       title: "أعمالنا المختارة",
       intro: "نماذج من حلول بنيناها لشركاء في مجالات التجارة، الخدمات، والتكنولوجيا المالية.",
@@ -111,7 +132,7 @@ export const translations: Record<Locale, TranslationResource> = {
       services: "Services",
       works: "Selected Work",
       portfolio: "Portfolio",
-      testimonials: "Testimonials",
+      stack: "Tech Stack",
       journey: "Process",
       contact: "Contact",
     },
@@ -146,6 +167,22 @@ export const translations: Record<Locale, TranslationResource> = {
           title: "Mobile Apps",
           desc: "The power of reach in the user's pocket. Native apps that run smoothly on iOS and Android.",
         },
+      ],
+    },
+    projects: {
+      title: "Business Models",
+      intro: "We help your team build and develop reliable, scalable solutions",
+      items: [
+        "Customer Relationship Management",
+        "Enterprise Resource Planning",
+        "Human Resources Management",
+        "Warehouse & Purchase Management",
+        "Equipment & Machinery Management",
+        "Invoices & Statements System",
+        "Labor & Contractors Management",
+        "Cost & Budget Management",
+        "Project Management System",
+        "WhatsApp Messaging System",
       ],
     },
     works: {

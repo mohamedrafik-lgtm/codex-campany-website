@@ -161,7 +161,7 @@ html[data-theme="light"] body::before {
 }
 
 body > .global-ambient {
-  z-index: 5;
+  z-index: -1;
 }
 
 /* Glass overlay layer */
@@ -378,7 +378,7 @@ section.scroll-in {
 .global-ambient {
   position: fixed;
   inset: 0;
-  z-index: 5;
+  z-index: -1;
   pointer-events: none;
   overflow: hidden;
 }
@@ -702,256 +702,60 @@ section {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Journey Section Animations */
-@keyframes dash {
-  to {
-    stroke-dashoffset: -1000;
-  }
-}
-
-.animate-dash {
-  animation: dash 30s linear infinite;
-}
-
-/* Journey Step Hover Effects */
-.journey-step {
+/* Journey Section - Modern Monochrome Design with Scroll Animations */
+.journey-step-new {
   position: relative;
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.journey-step::before {
-  content: '';
-  position: absolute;
-  inset: -12px;
-  border-radius: 1.75rem;
-  background: linear-gradient(45deg, transparent, transparent);
+/* Initial hidden state - will be toggled via React state */
+.journey-step-new.opacity-0 {
   opacity: 0;
-  transition: opacity 0.6s ease;
-  z-index: -1;
-  filter: blur(20px);
 }
 
-.journey-step[data-step="1"]::before {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05), transparent);
+/* Smooth hover effects for journey cards */
+.journey-step-new .group {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.journey-step[data-step="2"]::before {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05), transparent);
-}
-
-.journey-step[data-step="3"]::before {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05), transparent);
-}
-
-.journey-step[data-step="4"]::before {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.05), transparent);
-}
-
-.journey-step[data-step="5"]::before {
-  background: linear-gradient(135deg, rgba(217, 70, 239, 0.15), rgba(217, 70, 239, 0.05), transparent);
-}
-
-.journey-step:hover::before {
-  opacity: 1;
-}
-
-/* Journey Step Icon Animation */
-.journey-step-icon {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
+/* Glow effect for timeline progress */
+@keyframes timeline-glow {
   0%, 100% {
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3), 0 0 0 0 rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
   }
   50% {
-    box-shadow: 0 10px 40px -5px rgba(59, 130, 246, 0.5), 0 0 0 8px rgba(59, 130, 246, 0);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2);
   }
 }
 
-.journey-step[data-step="1"] .journey-step-icon {
-  animation: pulse-glow-blue 3s ease-in-out infinite;
-}
-
-.journey-step[data-step="2"] .journey-step-icon {
-  animation: pulse-glow-indigo 3s ease-in-out infinite 0.3s;
-}
-
-.journey-step[data-step="3"] .journey-step-icon {
-  animation: pulse-glow-violet 3s ease-in-out infinite 0.6s;
-}
-
-.journey-step[data-step="4"] .journey-step-icon {
-  animation: pulse-glow-purple 3s ease-in-out infinite 0.9s;
-}
-
-.journey-step[data-step="5"] .journey-step-icon {
-  animation: pulse-glow-fuchsia 3s ease-in-out infinite 1.2s;
-}
-
-@keyframes pulse-glow-blue {
-  0%, 100% {
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3), 0 0 0 0 rgba(59, 130, 246, 0.4);
-  }
-  50% {
-    box-shadow: 0 10px 40px -5px rgba(59, 130, 246, 0.6), 0 0 0 10px rgba(59, 130, 246, 0);
+/* Dark mode glow */
+@media (prefers-color-scheme: dark) {
+  @keyframes timeline-glow {
+    0%, 100% {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3);
+    }
   }
 }
 
-@keyframes pulse-glow-indigo {
-  0%, 100% {
-    box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3), 0 0 0 0 rgba(99, 102, 241, 0.4);
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .journey-step-new {
+    transition: none;
   }
-  50% {
-    box-shadow: 0 10px 40px -5px rgba(99, 102, 241, 0.6), 0 0 0 10px rgba(99, 102, 241, 0);
+  
+  .journey-step-new .group {
+    transition: none;
   }
-}
-
-@keyframes pulse-glow-violet {
-  0%, 100% {
-    box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3), 0 0 0 0 rgba(139, 92, 246, 0.4);
+  
+  @keyframes timeline-glow {
+    0%, 100% {
+      box-shadow: none;
+    }
   }
-  50% {
-    box-shadow: 0 10px 40px -5px rgba(139, 92, 246, 0.6), 0 0 0 10px rgba(139, 92, 246, 0);
-  }
-}
-
-@keyframes pulse-glow-purple {
-  0%, 100% {
-    box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.3), 0 0 0 0 rgba(168, 85, 247, 0.4);
-  }
-  50% {
-    box-shadow: 0 10px 40px -5px rgba(168, 85, 247, 0.6), 0 0 0 10px rgba(168, 85, 247, 0);
-  }
-}
-
-@keyframes pulse-glow-fuchsia {
-  0%, 100% {
-    box-shadow: 0 10px 25px -5px rgba(217, 70, 239, 0.3), 0 0 0 0 rgba(217, 70, 239, 0.4);
-  }
-  50% {
-    box-shadow: 0 10px 40px -5px rgba(217, 70, 239, 0.6), 0 0 0 10px rgba(217, 70, 239, 0);
-  }
-}
-
-/* Journey Progress Indicator Animation */
-.journey-indicator {
-  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-}
-
-.journey-indicator:hover {
-  opacity: 0.8 !important;
-  transform: translateX(4px);
-}
-
-.journey-indicator.active {
-  opacity: 1 !important;
-  transform: translateX(10px);
-}
-
-.journey-indicator.active span {
-  color: rgb(59, 130, 246);
-  font-weight: 700;
-}
-
-.journey-indicator.active div {
-  transform: scale(1.8);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), 0 0 10px rgba(59, 130, 246, 0.5);
-}
-
-.journey-indicator[data-step="2"].active span {
-  color: rgb(99, 102, 241);
-}
-
-.journey-indicator[data-step="2"].active div {
-  box-shadow: 0 0 25px rgba(99, 102, 241, 0.8), 0 0 10px rgba(99, 102, 241, 0.5);
-}
-
-.journey-indicator[data-step="3"].active span {
-  color: rgb(139, 92, 246);
-}
-
-.journey-indicator[data-step="3"].active div {
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.8), 0 0 10px rgba(139, 92, 246, 0.5);
-}
-
-.journey-indicator[data-step="4"].active span {
-  color: rgb(168, 85, 247);
-}
-
-.journey-indicator[data-step="4"].active div {
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.8), 0 0 10px rgba(168, 85, 247, 0.5);
-}
-
-.journey-indicator[data-step="5"].active span {
-  color: rgb(217, 70, 239);
-}
-
-.journey-indicator[data-step="5"].active div {
-  box-shadow: 0 0 25px rgba(217, 70, 239, 0.8), 0 0 10px rgba(217, 70, 239, 0.5);
-}
-
-/* Journey Step Active State */
-.journey-step.in-view {
-  animation: stepAppear 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes stepAppear {
-  0% {
-    opacity: 0;
-    transform: translateX(-30px) translateY(20px) scale(0.9);
-  }
-  60% {
-    opacity: 1;
-    transform: translateX(3px) translateY(-3px) scale(1.01);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1);
-  }
-}
-
-/* Shimmer Effect */
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-.journey-step.in-view > div:last-child::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  animation: shimmer 2s ease-in-out 0.5s;
-}
-
-/* Number counter animation */
-@keyframes countUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.journey-step-icon.in-view {
-  animation: countUp 0.5s ease-out forwards, pulse-glow-blue 3s ease-in-out infinite 0.5s;
 }
 
 /* Typography improvements */

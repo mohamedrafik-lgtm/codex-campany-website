@@ -62,7 +62,8 @@ export function BackgroundEffects() {
   if (!isHydrated) {
     return (
       <div
-        className="fixed inset-0 z-5 pointer-events-none w-full h-full bg-black"
+        className="fixed inset-0 pointer-events-none w-full h-full bg-black"
+        style={{ zIndex: -1 }}
         aria-hidden="true"
       />
     );
@@ -71,7 +72,8 @@ export function BackgroundEffects() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-5 pointer-events-none w-full h-full"
+      className="fixed inset-0 pointer-events-none w-full h-full"
+      style={{ zIndex: -1 }}
       aria-hidden="true"
     >
       <style>{`
@@ -135,7 +137,10 @@ export function BackgroundEffects() {
         }
       `}</style>
 
-      <div className={`global-ambient ${webGLFailed ? "webgl-fallback" : ""}`} aria-hidden>
+      <div
+        className={`global-ambient ${webGLFailed ? "webgl-fallback" : ""}`}
+        aria-hidden
+      >
         {meteorStyles.map((style, i) => (
           <span
             key={i}
@@ -163,7 +168,7 @@ export function BackgroundEffects() {
             style={{
               position: "fixed",
               inset: 0,
-              zIndex: 5,
+              zIndex: -1,
               pointerEvents: "none",
               width: "100%",
               height: "100%",
